@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:300,500&amp;subset=cyrillic');
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  color: $main-font-color;
+  font-family: $main-font;
+  @include font-size(0.8);
+  line-height: $font__line-height-body;
+
+  @include adaptive(smart) {
+    @include font-size(1);
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: .75em;
+  font-family: $main-font;
+  margin-bottom: .25em;
+  clear: both;
+  font-weight: normal;
+}
+
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  font-size: 2.6em;
+}
+
+h3 {
+  font-size: 2.2em;
+}
+
+h4 {
+  font-size: 2em;
+}
+
+h5 {
+  font-size: 1.8em;
+}
+
+h6 {
+  font-size: 1.6em;
+}

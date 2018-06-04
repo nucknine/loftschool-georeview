@@ -1,0 +1,20 @@
+/*шаблон по которому формирются стили для svg иконок*/
+.icon {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	fill: currentColor;
+}
+
+.icon-plus {
+	font-size:(512/10)*1rem;
+	width:(448/512)*1em;
+}
+.icon-search {
+	font-size:(512/10)*1rem;
+	width:(512/512)*1em;
+}
+.icon-times {
+	font-size:(512/10)*1rem;
+	width:(352/512)*1em;
+}
