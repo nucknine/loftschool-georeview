@@ -3,22 +3,13 @@
 (function() {
     'use strict';
 
-    svg4everybody();
-
-    const cache = new Map();
+    svg4everybody();    
 
     function getAddress(coords) {
         return new Promise((resolve) => {
             ymaps.geocode(coords).then(function (res) {
                 var firstGeoObject = res.geoObjects.get(0);
-
-                var address = [
-                    // Название населенного пункта или вышестоящее административно-территориальное образование.
-                    firstGeoObject.getLocalities().length ? firstGeoObject.getLocalities() : firstGeoObject.getAdministrativeAreas(),
-                    // Получаем путь до топонима, если метод вернул null, запрашиваем наименование здания.
-                    firstGeoObject.getThoroughfare() || firstGeoObject.getPremise()
-                ].filter(Boolean).join(', ');
-
+                var address =  firstGeoObject.getAddressLine();
                 return resolve(address);
             });
         });
@@ -48,7 +39,7 @@
     .then(() => {
         var myMap = new ymaps.Map('map', {
             center: [55.76, 37.64], // Москва
-            zoom: 10
+            zoom: 15
         }, {
             searchControlProvider: 'yandex#search'
         });
@@ -63,16 +54,17 @@
             if (!myMap.balloon.isOpen()) {
                 var coords = e.get('coords');
 
-                var p = new Promise(function(resolve) {
-                    var bl = myMap.balloon.open(coords, {
+                var p = new Promise(async function(resolve) {
+                    var bl = await myMap.balloon.open(coords, {
                         content: '<div id="form" class="baloon-body"><div>'
                     });
                     var form;
-
-                    setTimeout(() => {
+                    
+                    // setTimeout(() => {
                         form = document.querySelector('#form');
-                        resolve(form);
-                    }, 500);
+                        console.log(bl);
+                        resolve(form);                        
+                    // }, 500);
 
                 });
 
@@ -83,6 +75,7 @@
 
                         createReview(form, coords);
                         createPlaceMark(coords);
+
                         console.log(reviews);
                     });
                 });
