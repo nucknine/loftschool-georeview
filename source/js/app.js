@@ -7,126 +7,86 @@
 
     const cache = new Map();
 
-    function geocode(address) {
-        if (cache.has(address)) {
-            return Promise.resolve(cache.get(address));
-        }
+    function getAddress(coords) {
+        return new Promise((resolve) => {
+            ymaps.geocode(coords).then(function (res) {
+                var firstGeoObject = res.geoObjects.get(0);
 
-        return ymaps.geocode(address)
-        .then(result => {
-            const points = result.geoObjects.toArray();
+                var address = [
+                    // Название населенного пункта или вышестоящее административно-территориальное образование.
+                    firstGeoObject.getLocalities().length ? firstGeoObject.getLocalities() : firstGeoObject.getAdministrativeAreas(),
+                    // Получаем путь до топонима, если метод вернул null, запрашиваем наименование здания.
+                    firstGeoObject.getThoroughfare() || firstGeoObject.getPremise()
+                ].filter(Boolean).join(', ');
 
-            if (points.length) {
-                const coors = points[0].geometry.getCoordinates();
-
-                cache.set(address, coors);
-
-                return coors;
-            }
+                return resolve(address);
+            });
         });
     }
-    var data = {
-        'type': 'FeatureCollection',
-        'features': [
-            {
-                'type': 'Feature',
-                'id': 0,
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': [55.831903, 37.411961] },
-                'properties': {
-                    'balloonContent': 'Содержимое балуна',
-                    'clusterCaption': 'Метка с iconContent',
-                    'hintContent': 'Текст подсказки', 'iconContent': '1' },
-                'options': {
-                    'iconColor': '#ff0000',
-                    'preset': 'islands#blueCircleIcon'
-                }
-            },
-            {
-                'type': 'Feature',
-                'id': 1, 'geometry': {
-                    'type': 'Point',
-                    'coordinates': [55.763338, 37.565466]
-                },
-                'properties': {
-                    'balloonContent': 'Содержимое балуна',
-                    'clusterCaption': 'Еще одна метка',
-                    'hintContent': 'Текст подсказки'
-                }, 'options': {
-                    'preset': 'islands#blueSportCircleIcon'
-                }
-            }
-        ]
+
+    var reviews = {
+        items: []
     };
-    /**
-     * Object manager
-     */
-    /*
-    objectManager = new ymaps.ObjectManager({
-        // Чтобы метки начали кластеризоваться, выставляем опцию.
-        clusterize: true,
-        // ObjectManager принимает те же опции, что и кластеризатор.
-        gridSize: 32,
-        clusterDisableClickZoom: true
-    });
 
-    // objectManager.objects.options.set('preset', 'islands#greenDotIcon');
-    objectManager.clusters.options.set('preset', 'islands#invertedVioletClusterIcons');
+    function createReview (form, coords) {
+        let review = {};
 
-    myMap.geoObjects.add(objectManager);
-    objectManager.add(data);
-    */
+        review.coords = coords;
+        review.name = form.querySelector('#firstName').value;
+        review.spot = form.querySelector('#spot').value;
+        getAddress(coords).then((result)=>{
+            review.address = result;
+        });
+        review.comment = form.querySelector('#comment').value;
 
-    // let myMap;
+        reviews.items.push(review);
+    }
+
     let clusterer;
 
     new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку карты
     .then(() => {
         var myMap = new ymaps.Map('map', {
-                center: [55.76, 37.64], // Москва
-                zoom: 5
-            }, {
-                searchControlProvider: 'yandex#search'
-            }),
+            center: [55.76, 37.64], // Москва
+            zoom: 10
+        }, {
+            searchControlProvider: 'yandex#search'
+        });
+        
         /**
-         * myPlacemarks
-         */
-
-            myPlacemark1 = new ymaps.Placemark([55.826479, 37.487208], {
-                hintContent: 'Собственный значок метки',
-                balloonContent: 'Это красивая метка'
-            }, {
-                iconLayout: 'default#image',
-                iconImageHref: 'assets/img/icons/mark-orange.png',
-                iconImageSize: [44, 66], //44 x 66
-            }),
-
-            myPlacemark2 = new ymaps.Placemark([55.642063, 37.656123], {
-                hintContent: 'Собственный значок метки',
-                balloonContent: 'Это красивая метка'
-            }, {
-                iconLayout: 'default#image',
-                iconImageHref: 'assets/img/icons/mark-orange.png',
-                iconImageSize: [44, 66], //44 x 66
-            });
-        /**
-         * click left mouse
+         * click по карте
          */
 
         myMap.events.add('click', function (e) {
+            // console.log(e.get('target'));
+
             if (!myMap.balloon.isOpen()) {
                 var coords = e.get('coords');
 
-                createPlaceMark(coords);
+                var p = new Promise(function(resolve) {
+                    var bl = myMap.balloon.open(coords, {
+                        content: '<div id="form" class="baloon-body"><div>'
+                    });
+                    var form;
 
-                myMap.balloon.open(coords, {
+                    setTimeout(() => {
+                        form = document.querySelector('#form');
+                        resolve(form);
+                    }, 500);
 
                 });
 
-                let balloonDiv = document.querySelector('#result');
+                p.then(function(form) {
+                    renderForm(form);
 
-                renderForm(balloonDiv);
+                    document.querySelector('#button-add').addEventListener('click', () => {
+
+                        createReview(form, coords);
+                        createPlaceMark(coords);
+                        console.log(reviews);
+                    });
+                });
+
             } else {
                 myMap.balloon.close();
             }
@@ -139,7 +99,7 @@
             template = document.querySelector('#template').textContent;
 
             const render = Handlebars.compile(template);
-            const html = render();
+            const html = render(reviews);
 
             balloon.innerHTML = html;
         }
@@ -147,12 +107,19 @@
         function createPlaceMark (coords) {
             let myPlacemark = new ymaps.Placemark(coords, {
                 hintContent: 'Собственный значок метки',
+                balloonContent: [
+                    '<div id="result" class="baloon-body">',
+                    '</div>'
+                ].join('')
             }, {
                 iconLayout: 'default#image',
                 iconImageHref: 'assets/img/icons/mark-gray.png',
                 iconImageSize: [22, 33], //44 x 66
             });
 
+            myPlacemark.events.add('click', function (e) {
+                console.log(e);
+            });
             clusterer.add(myPlacemark);
         }
 

@@ -1,21 +1,25 @@
 extends ../_main-template
 
 block variables
-  - var title = 'Home page'
+    - var title = 'Home page'
 
 block content
-  +b.SECTION(id="map").map
-  +b.baloon(id="result")
-  script(id="template" type="text/x-handlebars-template")    
-    .baloon-body
-      .baloon-body__feed
-      .baloon-body__form
-        .baloon-body_group
-            INPUT.baloon-body__control(id="firstName" placeholder="Ваше имя")
-        .baloon-body_group
-            INPUT.baloon-body__control(id="spot" placeholder="Укажите место")
-        .baloon-body_group
-            TEXTAREA.baloon-body__control(id="comment" placeholder="Поделитесь впечатлениями")
-        .baloon-body_group
-            BUTTON.baloon-body__button(id="button-add")
-            | Добавить
+    +b.SECTION(id="map").map
+    script(id="template" type="text/x-handlebars-template")
+        .baloon-header
+        .baloon-body
+            .baloon-body__feed
+                | {{#each items}}
+                .baloon-body__name
+                | {{name}}
+                | {{/each}}        
+            .baloon-body__form
+                .baloon-body_group
+                    INPUT.baloon-body__control(id="firstName" placeholder="Ваше имя")
+                .baloon-body_group
+                    INPUT.baloon-body__control(id="spot" placeholder="Укажите место")
+                .baloon-body_group
+                    TEXTAREA.baloon-body__control(id="comment" placeholder="Поделитесь впечатлениями")
+                .baloon-body_group
+                    BUTTON.baloon-body__button(id="button-add")
+                        | Добавить

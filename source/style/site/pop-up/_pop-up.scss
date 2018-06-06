@@ -1,11 +1,16 @@
 .baloon-header {
+    height: 40px;
     background: $orange;
 }
 
 .baloon-body {
-    background: yellow;
+    width: 200px;
+    height: 300px;
+    &__feed {        
+        height: 100px;
+    }
 }
 
 .baloon-footer {
-    
+
 }
