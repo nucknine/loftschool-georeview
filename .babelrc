@@ -9,7 +9,7 @@
     "stage-2",
     "es2015"
   ],
-  "plugins": [["babel-plugin-transform-runtime"], ["transform-es2015-modules-commonjs", { "allowTopLevelThis": true }]],
+  "plugins": [["transform-es2015-modules-commonjs", { "allowTopLevelThis": true }]],
   "env": {
     "test": {
       "presets": ["env", "stage-2", "es2015"],
@@ -17,4 +17,3 @@
     }
   }
 }
-

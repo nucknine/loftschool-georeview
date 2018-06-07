@@ -1,9 +1,23 @@
-.baloon-header {
-    height: 40px;
-    background: $orange;
+.balloon {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 200px;
+    height: 320px;
+    border-radius: 15px;
+    background: white;    
 }
 
-.baloon-body {
+.balloon-header {
+    color: white;
+    height: 40px;
+    background: $orange;
+    border-radius: 15px 15px 0 0;
+}
+
+.balloon-body {
     width: 200px;
     height: 300px;
     &__feed {        
@@ -11,6 +25,10 @@
     }
 }
 
-.baloon-footer {
+.balloon-footer {
 
+}
+
+.hide {    
+    height: 320px;
 }
