@@ -11,15 +11,15 @@ block content
         .balloon-body
             .balloon-body__feed(id="feed")
             .balloon-body__form
-                .balloon-body_group
+                .balloon-body__group
                     INPUT.balloon-body__control(id="firstName" placeholder="Ваше имя")
-                .balloon-body_group
+                .balloon-body__group
                     INPUT.balloon-body__control(id="spot" placeholder="Укажите место")
-                .balloon-body_group
-                    TEXTAREA.balloon-body__control(id="comment" placeholder="Поделитесь впечатлениями")
-                .balloon-body_group
-                    BUTTON.balloon-body__button(id="button-add")
-                        | Добавить
+                .balloon-body__group
+                    TEXTAREA.balloon-body__control.balloon-body__textarea(id="comment" placeholder="Поделитесь впечатлениями")
+        .balloon-foter                
+            BUTTON.balloon-footer__button(id="button-add")
+                | Добавить
     script(id="feed-template" type="text/x-handlebars-template")
         | {{#each items}}
         SPAN.balloon-body__name

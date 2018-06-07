@@ -9,6 +9,7 @@ button,
 input,
 select,
 textarea {
+  resize: none;
   color: $main-font-color;
   font-family: $main-font;
   @include font-size(0.8);

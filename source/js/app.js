@@ -1,19 +1,5 @@
-/* globals svg4everybody, ymaps */
-
-    svg4everybody();
-
-    closeBalloon();
-
-    function getAddress(coords) {
-        return new Promise((resolve) => {
-            ymaps.geocode(coords).then(function (res) {
-                var firstGeoObject = res.geoObjects.get(0);
-                var address = firstGeoObject.getAddressLine();
-
-                return resolve(address);
-            });
-        });
-    }
+/* globals ymaps, Handlebars */
+    closeBalloon();    
 
     function closeBalloon () {
         const form = document.querySelector('#form');
@@ -26,37 +12,12 @@
         clickAddress: {
             address: ''
         }
-    };
-
-    function createReview (form, coords) {
-        let review = {};
-
-        review.coords = coords;
-        review.name = form.querySelector('#firstName').value;
-        review.spot = form.querySelector('#spot').value;
-        getAddress(coords).then((result)=>{
-            review.address = result;
-        });
-        review.comment = form.querySelector('#comment').value;
-        review.date = new Date().toLocaleString();
-        console.log(reviews);
-        if (review.name && review.spot && review.comment) {
-            reviews.items.push(review);            
-            form.querySelector('#firstName').value = null;
-            form.querySelector('#spot').value = null;
-            form.querySelector('#comment').value = null;
-
-            return true;
-        }
-
-        return false;
-
-    }
+    };    
 
     let clusterer;
 
     new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку карты
-    .then(() => {
+    .then(() => {        
         var myMap = new ymaps.Map('map', {
             center: [55.76, 37.64], // Москва
             zoom: 15
@@ -64,28 +25,58 @@
             searchControlProvider: 'yandex#search'
         });
 
-        /**
-         * click по карте
-         */
-        myMap.events.add('click', function (e) {
-            var coords = e.get('coords');
+        // Creating a custom layout with information about the selected geo object.
+        var customItemContentLayout = ymaps.templateLayoutFactory.createClass(
+        // The "raw" flag means that data is inserted "as is" without escaping HTML.
+        '<h2 class=ballon_header>{{ properties.balloonContentHeader|raw }}</h2>' +
+            '<div class=ballon_body>{{ properties.balloonContentBody|raw }}</div>' +
+            '<div class=ballon_footer>{{ properties.balloonContentFooter|raw }}</div>'
+        );
 
-            getAddress(coords).then((result)=>{
-                reviews.clickAddress.address = result;
-            });
+        function getAddress(coords) {            
+            ymaps.geocode(coords).then(function (res) {
+                var firstGeoObject = res.geoObjects.get(0);
+
+                reviews.clickAddress.address = firstGeoObject.getAddressLine();
+            });            
+        }
+
+        function createReview (form, coords) {
+            let review = {};
+    
+            review.coords = coords;
+            review.name = form.querySelector('#firstName').value;
+            review.spot = form.querySelector('#spot').value;            
+            review.address = reviews.clickAddress.address;            
+            review.comment = form.querySelector('#comment').value;
+            review.date = new Date().toLocaleString();
             
-            console.log(reviews.clickAddress.address);
+            if (review.name && review.spot && review.comment) {
+                reviews.items.push(review);            
+                form.querySelector('#firstName').value = null;
+                form.querySelector('#spot').value = null;
+                form.querySelector('#comment').value = null;
 
+                createPlaceMark(coords, review);
+    
+                return true;
+            }
+    
+            return false;
+    
+        }
+
+        myMap.events.add('click', function (e) {
+            let coords = e.get('coords');            
             let form = document.querySelector('#form');
 
+            getAddress(coords);
             if (form.style.display !== 'block') {
-
-                var position = e.get('position');
-
+                let position = e.get('position');          
+                
                 openBalloon(position, form);
                 renderForm(form, coords);
                 renderFeed(form, coords);
-
             } else {
                 closeBalloon();
             }
@@ -115,21 +106,15 @@
         }
 
         function renderForm (form, coords) {
-
-            let template;
-
-            template = document.querySelector('#template').textContent;
-
+            let template = document.querySelector('#template').textContent;
             const render = Handlebars.compile(template);
-
             const html = render(reviews.clickAddress);
 
             form.innerHTML = html;
-
             document.querySelector('#button-add').addEventListener('click', () => {
                 if (createReview(form, coords)) {
-                    createPlaceMark(coords);
                     renderFeed(form, coords);
+                    
                 } else {
                     return false;
                 }
@@ -147,15 +132,18 @@
                 if (x == coordX && y == coordY) {
                     feed.items.push(item);
                 }
-            }
+            }            
 
             return feed;
         }
 
-        function createPlaceMark (coords) {
+        function createPlaceMark (coords, review) {
+            
             let myPlacemark = new ymaps.Placemark(coords, {
                 hintContent: 'Место с отзывом',
-                balloonContent: '',
+                balloonContentHeader: review.name,
+                balloonContentBody: review.comment,
+                balloonContentFooter: review.date
             }, {
                 iconLayout: 'default#image',
                 iconImageHref: 'assets/img/icons/mark-gray.png',
@@ -163,6 +151,7 @@
             });
 
             myPlacemark.events.add('click', function (e) {
+                e.preventDefault();
                 var coords = myPlacemark.geometry.getCoordinates();
 
                 var position = e.get('position');
@@ -178,7 +167,17 @@
         clusterer = new ymaps.Clusterer({
             preset: 'islands#invertedVioletClusterIcons',
             clusterDisableClickZoom: true,
-            openBalloonOnClick: false
+            openBalloonOnClick: true,
+            // Setting the "Carousel" standard layout for a cluster balloon.
+            clusterBalloonContentLayout: 'cluster#balloonCarousel',
+            // Setting a custom layout.
+            clusterBalloonItemContentLayout: customItemContentLayout,
+            clusterBalloonPanelMaxMapArea: 0,
+            // Setting the size of the balloon content layout (in pixels).
+            clusterBalloonContentLayoutWidth: 200,
+            clusterBalloonContentLayoutHeight: 130,
+            // Setting the maximum number of items in the bottom panel on one page
+            clusterBalloonPagerSize: 5
         });
 
         myMap.geoObjects

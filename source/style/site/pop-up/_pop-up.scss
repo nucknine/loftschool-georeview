@@ -1,34 +1,80 @@
 .balloon {
+    font-family: 'Fira Sans', 'Arial', 'serif';
+    font-size: 15px;
+    color: $main-font-color;
     display: none;
     position: absolute;
     top: 0;
     left: 0;
     z-index: 999;
-    width: 200px;
-    height: 320px;
+    width: 379px;
+    height: 527px;
     border-radius: 15px;
-    background: white;    
+    background: white;       
 }
 
 .balloon-header {
-    color: white;
-    height: 40px;
+    display: flex;
+    justify-content: flex-start;
+    align-content: center;
+    line-height: 45px;
+    color: $white;
+    height: 45px;
+    font-size: 12px;
+    padding-left: 30px;
+    font-weight: 100;
     background: $orange;
     border-radius: 15px 15px 0 0;
 }
 
 .balloon-body {
-    width: 200px;
-    height: 300px;
-    &__feed {        
-        height: 100px;
+    padding: 16px; 
+    &__form {
+        height: 270px;
+    }
+    &__feed {
+        height: 155px;
+    }
+    &__group {
+        margin-bottom: 16px;
+    }
+    &__control {
+        height: 30px;
+        width: 100%;
+        border: 1px solid $dark-gray;
+        border-radius: 14px;
+    }
+    &__textarea {
+        height: 130px;
+        outline: none;
+        resize: none;
     }
 }
 
 .balloon-footer {
-
-}
-
-.hide {    
-    height: 320px;
+    height: 60px;
+    display: block;
+    position: relative;
+    &__button {
+        user-select: none;
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        width: 90px;
+        height: 35px;
+        background: $orange;
+        color: $white;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 300;
+        border: none;
+        cursor: pointer;
+        &:hover {
+            background: white;
+            color: $orange;
+        }
+    }
 }
