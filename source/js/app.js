@@ -5,7 +5,8 @@ var form = document.querySelector('#form'),
         clickAddress: {
             address: ''
         },
-        position: []
+        position: [],
+        placemark: {}
     },
     clusterer;
 
@@ -75,6 +76,7 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
             openBalloon(reviews.position, coords);
         } else {
             closeBalloon();
+            toggleIcon();
         }
     });
 
@@ -138,10 +140,15 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
             let coords = e.target.dataset.coords.split(',');
             let position = e.target.dataset.position.split(',');
 
-            // ymaps.balloon.close();
+            myMap.balloon.close();
             openBalloon(position);
             renderForm(coords);
             renderFeed(coords);
+        }
+
+        if (e.target.parentElement.classList.contains('icon-times')) {
+            closeBalloon();
+            toggleIcon();
         }
     });
 
@@ -158,10 +165,11 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
             balloonContentFooter: `<div>${review.date}</div>`
         }, {
             iconLayout: 'default#image',
-            iconImageHref: 'assets/img/icons/mark-gray.png',
+            iconImageHref: 'assets/img/icons/mark-orange.png',
             iconImageSize: [22, 33], //44 x 66
         });
 
+        reviews.placemark = myPlacemark;
         myPlacemark.events.add('click', function (e) {
             e.preventDefault();
             let coords = myPlacemark.geometry.getCoordinates();
@@ -170,6 +178,8 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
             openBalloon(reviews.position);
             renderForm(coords);
             renderFeed(coords);
+            myPlacemark.options.set({ iconImageHref: 'assets/img/icons/mark-orange.png' });
+            reviews.placemark = myPlacemark;
         });
         clusterer.add(myPlacemark);
     }
@@ -197,4 +207,10 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
 
 function closeBalloon () {
     form.style.display = 'none';
+}
+
+function toggleIcon() {
+    if (reviews.placemark.options != undefined) {
+        reviews.placemark.options.set({ iconImageHref: 'assets/img/icons/mark-gray.png' });
+    }
 }

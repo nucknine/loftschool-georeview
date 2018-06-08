@@ -7,7 +7,10 @@ block content
     +b.SECTION(id="map").map
     +b.balloon(id="form")
     script(id="template" type="text/x-handlebars-template")
-        .balloon-header {{address}}
+        .balloon-header
+            +icon('map-marker')
+            | {{address}}
+            +icon('times')
         .balloon-body
             .balloon-body__feed(id="feed")
                 | Отзывов пока нет
@@ -21,7 +24,7 @@ block content
                     INPUT.balloon-body__control(id="spot" placeholder="Укажите место")
                 .balloon-body__group
                     TEXTAREA.balloon-body__control.balloon-body__textarea(id="comment" placeholder="Поделитесь впечатлениями")
-        .balloon-foter
+        .balloon-footer
             BUTTON.balloon-footer__button(id="button-add")
                 | Добавить
     script(id="feed-template" type="text/x-handlebars-template")

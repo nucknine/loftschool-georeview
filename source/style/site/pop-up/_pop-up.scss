@@ -3,36 +3,55 @@
     font-size: 15px;
     font-weight: 400;
     color: $main-font-color;
-    display: none;
     position: absolute;
     top: 0;
     left: 0;
     z-index: 999;
     width: 379px;
-    height: 527px;
+    height:auto;
+    max-height: 527px;;
     border-radius: 15px;
     background: white;
+    overflow: hidden;
+    transition: max-height 1s ease-in-out;
 }
 
 .balloon-header {
     display: flex;
     justify-content: flex-start;
-    align-content: center;
-    line-height: 45px;
+    align-content: baseline;
+    line-height: 52px;
     color: $white;
     height: 45px;
     font-size: 12px;
-    padding-left: 30px;
+    padding-left: 46px;
     font-weight: 300;
     background: $orange;
     border-radius: 15px 15px 0 0;
+    & .icon-times {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        font-size: 18px;
+        color: $white;
+        cursor: pointer;
+    }
+
+    & .icon-map-marker {
+        position: absolute;
+        top: 9px;
+        left: 16px;
+        font-size: 25px;
+        color: $white;
+        cursor: pointer;
+    }
 }
 
 .balloon-body {
     padding: 16px;
     &__form {
         // padding-top: 12px;
-        height: 270px;
+        // height: 270px;
     }
     &__title {
         font-weight: 500;
@@ -42,7 +61,7 @@
     &__feed {
         overflow-y: scroll;
         overflow-x: hidden;
-        height: 155px;
+        max-height: 155px;
         &::-webkit-scrollbar {
             width: 3px;
         }
@@ -84,6 +103,7 @@
         margin-top: 12px;
     }
     &__control {
+        outline: none;
         height: 30px;
         width: 100%;
         border: 1px solid $dark-gray;
@@ -103,7 +123,7 @@
 }
 
 .balloon-footer {
-    height: 60px;
+    height: 22px;
     display: block;
     position: relative;
     &__button {
