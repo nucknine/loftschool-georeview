@@ -10,24 +10,30 @@ block content
         .balloon-header {{address}}
         .balloon-body
             .balloon-body__feed(id="feed")
+                | Отзывов пока нет
             .balloon-body__form
+                .balloon-body__group
+                    SPAN.balloon-body__title
+                        | ВАШ ОТЗЫВ
                 .balloon-body__group
                     INPUT.balloon-body__control(id="firstName" placeholder="Ваше имя")
                 .balloon-body__group
                     INPUT.balloon-body__control(id="spot" placeholder="Укажите место")
                 .balloon-body__group
                     TEXTAREA.balloon-body__control.balloon-body__textarea(id="comment" placeholder="Поделитесь впечатлениями")
-        .balloon-foter                
+        .balloon-foter
             BUTTON.balloon-footer__button(id="button-add")
                 | Добавить
     script(id="feed-template" type="text/x-handlebars-template")
         | {{#each items}}
-        SPAN.balloon-body__name
-        | {{name}}
-        SPAN.balloon-body__spot
-        | {{spot}}
-        SPAN.balloon-body__comment
-        |{{comment}}
-        SPAN.balloon-body__date
-        |{{date}}
+        .balloon-body__review
+            .balloon-body__info
+                SPAN.balloon-body__name
+                    | {{name}}
+                SPAN.balloon-body__spot
+                    | {{spot}}
+                SPAN.balloon-body__date
+                    | {{date}}
+            .balloon-body__comment
+                | {{comment}}
         | {{/each}}

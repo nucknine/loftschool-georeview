@@ -1,6 +1,7 @@
 .balloon {
     font-family: 'Fira Sans', 'Arial', 'serif';
     font-size: 15px;
+    font-weight: 400;
     color: $main-font-color;
     display: none;
     position: absolute;
@@ -10,7 +11,7 @@
     width: 379px;
     height: 527px;
     border-radius: 15px;
-    background: white;       
+    background: white;
 }
 
 .balloon-header {
@@ -22,27 +23,77 @@
     height: 45px;
     font-size: 12px;
     padding-left: 30px;
-    font-weight: 100;
+    font-weight: 300;
     background: $orange;
     border-radius: 15px 15px 0 0;
 }
 
 .balloon-body {
-    padding: 16px; 
+    padding: 16px;
     &__form {
+        // padding-top: 12px;
         height: 270px;
     }
+    &__title {
+        font-weight: 500;
+        color: $orange;
+        text-transform: uppercase;
+    }
     &__feed {
+        overflow-y: scroll;
+        overflow-x: hidden;
         height: 155px;
+        &::-webkit-scrollbar {
+            width: 3px;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: $dark-gray;
+        }
+        border-bottom: 1px solid $gray;
+    }
+    &__review {
+        max-width: 350px;
+        display: flex;
+        flex-wrap: wrap;
+        flex-basis: 100%;
+        height: 75px;
+    }
+    &__info {
+        display: flex;
+        align-items: baseline;
+        flex-basis: 100%;
+    }
+    &__name {
+        font-weight: 500;
+        font-size: 16px;
+        margin-right: 12px;
+    }
+    &__spot {
+        color: $gray-font-color;
+        margin-right: 12px;
+    }
+    &__date {
+        color: $gray-font-color;
+        font-size: 14px;
+    }
+    &__comment {
+        display: flex;
+        flex-basis: 100%;
     }
     &__group {
-        margin-bottom: 16px;
+        margin-top: 12px;
     }
     &__control {
         height: 30px;
         width: 100%;
         border: 1px solid $dark-gray;
         border-radius: 14px;
+        padding-left: 15px;
+        &::placeholder {
+            font-size: 15px;
+            font-weight: 300;
+            color: $gray-font-color;
+        }
     }
     &__textarea {
         height: 130px;
@@ -59,12 +110,12 @@
         user-select: none;
         position: absolute;
         bottom: 8px;
-        right: 8px;
+        right: 16px;
         display: flex;
         justify-content: center;
         align-content: center;
         width: 90px;
-        height: 35px;
+        height: 30px;
         background: $orange;
         color: $white;
         border-radius: 10px;
@@ -76,5 +127,29 @@
             background: white;
             color: $orange;
         }
+    }
+}
+
+// cluster
+.cluster {
+    font-family: 'Fira Sans', 'Arial', 'serif';
+    font-size: 12px;
+    font-weight: 400;
+    color: $main-font-color;
+    &__header {
+        font-size: 12px;
+        font-weight: bold;
+    }
+    &__comment {
+        margin-top: 12px;
+    }
+    &__body {
+        margin-top: 12px;
+    }
+    &__footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 12px;
+        color: $dark-gray;
     }
 }
