@@ -105,7 +105,7 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
             form.style.left = toLeftEdge > form.offsetWidth ? left + 'px' : left - form.offsetWidth + 'px';
             renderForm(coords);
         }
-        
+
         function renderForm(coords) {
             let template = document.querySelector('#template').textContent;
             const render = Handlebars.compile(template);

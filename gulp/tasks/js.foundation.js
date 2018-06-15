@@ -1,9 +1,10 @@
 'use strict';
-//Сбор JS файлов необходимых для работы проекта (Jquery и тд)
+
+// Сбор JS файлов необходимых для работы проекта (Jquery и тд)
 module.exports = function() {
-  $.gulp.task('js:foundation', function() {
-    return $.gulp.src($.path.jsFoundation)
-      .pipe($.gp.concat('foundation.js'))
-      .pipe($.gulp.dest($.config.root + '/assets/js'))
-  })
+    $.gulp.task('js:foundation', function() {
+        return $.gulp.src($.path.jsFoundation)
+            .pipe($.gp.concat('foundation.js'))
+            .pipe($.gulp.dest($.config.root + '/assets/js'))
+    })
 };
