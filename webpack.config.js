@@ -1,27 +1,21 @@
-const webpack = require('webpack');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-
-const config = {
-    entry: './source/js/app.js'
-
-    ,
+module.exports = {
     output: {
-        filename: '[name].js'
+        filename: 'app.js'
     },
+    devtool: 'eval',
     module: {
         rules: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader'
+                test: /\.(js)$/,
+                exclude: /(node_modules)/,
+                loader: 'babel-loader',
+                query: {
+                    presets: ['env'],
+                    plugins: [
+                        'transform-runtime'
+                    ]
+                }
             }
         ]
-    },
-    plugins: [
-        new UglifyJSPlugin({
-            sourceMap: true
-        })
-    ]
-};
-
-module.exports = config;
+    }
+}

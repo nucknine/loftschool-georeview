@@ -1,7 +1,7 @@
 {
     "parserOptions": {
       "sourceType": "module",
-      "ecmaVersion": 7
+      "ecmaVersion": 2017
     },
     "env": {
       "node": true,
@@ -13,6 +13,8 @@
       "eslint:recommended"
     ],
     "rules": {
+      "no-console": "off",
+      "no-unreachable": "off",
       "no-cond-assign": "off",
       "space-before-blocks": "error",
       "spaced-comment": "error",
