@@ -1,6 +1,10 @@
 {
   "name": "gulp4-project",
   "author": "Oleg Maximov",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nucknine/loftschool-georeview.git"
+  },
   "license": "GPL-3.0",
   "scripts": {
     "update:packages": "node wipe-dependencies.js && rm -rf node_modules && npm update --save-dev && npm update --save"

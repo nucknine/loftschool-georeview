@@ -1,7 +1,4 @@
 /* globals ymaps, Handlebars */
-import Hello from './file.js';
-
-console.log(Hello.hello());
 
 var form = document.querySelector('#form'),
     reviews = {
@@ -15,15 +12,6 @@ var form = document.querySelector('#form'),
     clusterer;
 
 closeBalloon();
-
-async function foo() {
-    await bar();
-}
-
-function bar() {
-    console.log('Work!');
-}
-foo();
 
 new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку карты
     .then(() => {
@@ -42,14 +30,6 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
             '<div class=cluster__footer>{{ properties.balloonContentFooter|raw }}</div>'+
             '</div>'
         );
-
-        async function getAddress(coords) {
-            await ymaps.geocode(coords).then(function (res) {
-                var firstGeoObject = res.geoObjects.get(0);
-
-                reviews.clickAddress.address = firstGeoObject.getAddressLine();
-            });
-        }
 
         function createReview (coords) {
             let dateObj = new Date(),
@@ -83,10 +63,12 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
         myMap.events.add('click', function (e) {
             let coords = e.get('coords');
 
-            getAddress(coords);
             if (form.style.display !== 'block') {
                 reviews.position = e.get('position');
-                openBalloon(reviews.position, coords);
+                getAddress(coords).then((res)=>{
+                    reviews.clickAddress.address = res;
+                    openBalloon(reviews.position, coords);
+                });
             } else {
                 closeBalloon();
                 toggleIcon();
@@ -148,8 +130,6 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
 
             return feed;
         }
-
-        console.log('dssdds');
 
         document.addEventListener('click', (e) => {
             if (e.target.dataset.coords) {
@@ -219,7 +199,17 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
         myMap.geoObjects
             .add(clusterer);
     }) // инициализация карты
-    .catch(e => alert('Ошибка: ' + e.message));
+    .catch(e => console.log('Ошибка: ' + e.message));
+
+function getAddress(coords) {
+    return new Promise(function(resolve) {
+        ymaps.geocode(coords).then(function (res) {
+            var firstGeoObject = res.geoObjects.get(0);
+
+            resolve(firstGeoObject.getAddressLine());
+        });
+    });
+}
 
 function closeBalloon () {
     form.style.display = 'none';
