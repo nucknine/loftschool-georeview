@@ -65,18 +65,17 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
 
             if (form.style.display !== 'block') {
                 reviews.position = e.get('position');
-                getAddress(coords).then((res)=>{
-                    reviews.clickAddress.address = res;
-                    openBalloon(reviews.position, coords);
-                });
+                openBalloon(coords);
             } else {
                 closeBalloon();
                 toggleIcon();
             }
         });
 
-        function openBalloon ([left, top], coords) {
-
+        async function openBalloon ([left, top], coords) {
+            console.log(reviews.clickAddress.address);
+            reviews.clickAddress.address = await getAddress(coords);
+            console.log(reviews.clickAddress.address);
             form.style.display = 'block';
             form.style.left = left + 'px';
 
@@ -92,7 +91,6 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
             let template = document.querySelector('#template').textContent;
             const render = Handlebars.compile(template);
             const html = render(reviews.clickAddress);
-            // html = 'dssd';
 
             form.innerHTML = html;
             document.querySelector('#button-add').addEventListener('click', () => {
