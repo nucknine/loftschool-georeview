@@ -72,10 +72,13 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
             }
         });
 
-        async function openBalloon ([left, top], coords) {
-            console.log(reviews.clickAddress.address);
+        async function openBalloon(coords) {
             reviews.clickAddress.address = await getAddress(coords);
-            console.log(reviews.clickAddress.address);
+            renderBalloon(coords);
+            renderForm(coords);
+        }
+
+        function renderBalloon ([left, top]) {
             form.style.display = 'block';
             form.style.left = left + 'px';
 
@@ -84,7 +87,6 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
 
             form.style.top = toTopEdge > form.offsetHeight ? top + 'px' : top - form.offsetHeight + 'px';
             form.style.left = toLeftEdge > form.offsetWidth ? left + 'px' : left - form.offsetWidth + 'px';
-            renderForm(coords);
         }
 
         function renderForm(coords) {
@@ -135,7 +137,7 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
                 let position = e.target.dataset.position.split(',');
 
                 myMap.balloon.close();
-                openBalloon(position);
+                renderBalloon(position);
                 renderForm(coords);
                 renderFeed(coords);
             }
@@ -169,7 +171,7 @@ new Promise(resolve => ymaps.ready(resolve)) // ждем загрузку кар
                 let coords = myPlacemark.geometry.getCoordinates();
 
                 reviews.position = e.get('position');
-                openBalloon(reviews.position);
+                renderBalloon(reviews.position);
                 renderForm(coords);
                 renderFeed(coords);
                 myPlacemark.options.set({ iconImageHref: 'assets/img/icons/mark-orange.png' });
